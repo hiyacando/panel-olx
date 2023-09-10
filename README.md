@@ -1,4 +1,5 @@
-# panel-olx-frontend
+# Panel OLX
+<p>Narzędzie usprawniające pracę z OLX.PL</p>
 <h1>TODO:</h1>
 <ul>
   <li>Projekt interfejsu</li>
