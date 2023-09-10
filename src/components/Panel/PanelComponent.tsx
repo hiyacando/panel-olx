@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import styled from "styled-components";
 import ScrapeButtonComponent from "./ScrapeButtonComponent";
-import SignOutButtonComponent from "../SignIn/SignOutButtonComponent";
+import SignOutButtonComponent from "../Authorization/SignOutButtonComponent";
 import DataTable from "./DataTableComponent";
 import "animate.css";
 import { fetchNavItems, fetchUserInfo } from '../../utils/axios-service';

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import SignInComponent from './components/SignIn/SignInComponent';
-import RegisterComponent from './components/SignIn/RegisterComponent';
+import SignInComponent from './components/Authorization/SignInComponent';
+import RegisterComponent from './components/Authorization/RegisterComponent';
 import PanelComponent from './components/Panel/PanelComponent';
 import styled from 'styled-components';
 import AdminPanelComponent from './components/Panel/AdminPanel/AdminPanelComponent';
