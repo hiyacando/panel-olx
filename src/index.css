@@ -1,0 +1,29 @@
+@font-face {
+  font-family: 'DIN Pro';
+  src: url(./assets/fonts/FontsFree-Net-DINPro-1.ttf);
+}
+
+#root {
+  font-family: 'DIN Pro';
+
+}
+
+body {
+
+  background: rgb(60, 69, 148);
+
+  background: radial-gradient(circle, rgb(125, 110, 145) 0%, rgba(14, 14, 14, 0.8827906162464986) 250%);
+  background-color: rgb(18, 19, 22);
+  margin-left: 1.2rem;
+  margin-right: 1.2rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0;
+
+  font-family: 'DIN Pro';
+
+}
+
+.toast {
+  box-shadow: none !important;
+  border-radius: 16px !important;
+}
