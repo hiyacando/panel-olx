@@ -15,7 +15,7 @@ const ScrapeButtonComponent = () => {
                 await scrapeData();
                 console.log('Pobrano dane.');
                 console.log('Zaktualizowano dane.');
-                dispatch(setShouldFetchDataTrue()); // Ustawienie shouldFetchData na true
+                dispatch(setShouldFetchDataTrue());
 
             } catch (error) {
                 console.error('Error:', error);
