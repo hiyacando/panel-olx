@@ -16,7 +16,7 @@ const SignOutButtonComponent: React.FC<SignOutButtonProps> = ({ onLogout }) => {
   );
 };
 
-const ScrapeButton = styled.text`
+const ScrapeButton = styled.span`
   font-weight: 600;
   padding: 0;
   color: white;

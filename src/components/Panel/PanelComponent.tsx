@@ -129,11 +129,11 @@ const UserInfo = styled.div`
 display: flex;
 flex-direction: column;
 `
-const UserRole = styled.text`
+const UserRole = styled.span`
 color: #ffffff;
 
 `
-const UserName = styled.text`
+const UserName = styled.span`
 color: #ffffff;
 `
 const UserWrapper = styled.div`
