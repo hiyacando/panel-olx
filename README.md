@@ -1,5 +1,5 @@
 # Panel OLX
-<p>Panel OLX jest narzędziem usprawniającym proces analizy ogłoszeń i filtrowania w celu zaoszczędzenia czasu. Dodatkowo ułatwia pracę w grupie pozwalając na oznaczanie ogłoszeń.</p>
+<p>Panel OLX jest narzędziem usprawniającym proces analizy ogłoszeń i filtrowania w celu zaoszczędzenia czasu. Dodatkowo ułatwia pracę w grupie pozwalając między innymi na oznaczenie ogłoszeń.</p>
 <h2>Funkcje</h2>
 <ul>
   <li>Autoryzacja użytkowników</li>
