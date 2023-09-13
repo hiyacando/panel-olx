@@ -1,115 +1,112 @@
-import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
-import { Scrollbars } from 'react-custom-scrollbars-2';
-import { useSelector, useDispatch } from 'react-redux';
+import React, { useState, useEffect } from "react";
+import styled from "styled-components";
+import { Scrollbars } from "react-custom-scrollbars-2";
+import { useSelector, useDispatch } from "react-redux";
+import { selectUser } from "../../redux/models/user";
+
 import {
-    fetchProductsData,
-    recordClick,
-    fetchProductStatus,
-} from '../../utils/axios-service';
-import { RootState } from '../../redux/store';
+  fetchProductsData,
+  recordClick,
+  fetchProductStatus,
+} from "../../utils/axios-service";
+import { RootState } from "../../redux/store";
 import {
-    setShouldFetchData,
-    selectSelectedModel,
-} from '../../redux/models/navItems';
+  setShouldFetchData,
+  selectSelectedModel,
+} from "../../redux/models/navItems";
 
 interface ItemData {
-    link: string;
-    title: string;
-    price: string;
-    is_damaged: boolean;
-    status: string;
+  link: string;
+  title: string;
+  price: string;
+  is_damaged: boolean;
+  status: string;
 }
 
-interface DataTableProps {
-    userID: string | null;
-}
+const DataTable: React.FC = () => {
+  const selectedModel = useSelector(selectSelectedModel);
+  const user = useSelector(selectUser);
+  const shouldFetchData = useSelector(
+    (state: RootState) => state.navItems.shouldFetchData,
+  );
+  const dispatch = useDispatch();
+  const [data, setData] = useState<ItemData[]>([]);
 
-const DataTable: React.FC<DataTableProps> = ({ userID }) => {
-    const selectedModel = useSelector(selectSelectedModel);
-    const shouldFetchData = useSelector(
-        (state: RootState) => state.navItems.shouldFetchData
-    );
-    const dispatch = useDispatch();
-    const [data, setData] = useState<ItemData[]>([]);
+  useEffect(() => {
+    if (selectedModel && shouldFetchData) {
+      fetchAndSetData(selectedModel);
+    }
+    dispatch(setShouldFetchData(false));
+  }, [selectedModel, shouldFetchData]);
 
-    useEffect(() => {
-        if (selectedModel && shouldFetchData) {
-            fetchAndSetData(selectedModel);
+  const fetchAndSetData = async (selectedModel: string) => {
+    try {
+      const fetchedData = await fetchProductsData(selectedModel);
+      setData(fetchedData);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const handleLinkClick = async (link: string) => {
+    try {
+      await recordClick(user.user_id, link);
+      const updatedStatus = await fetchProductStatus(link);
+      const updatedData = data.map((item) => {
+        if (item.link === link) {
+          return {
+            ...item,
+            status: updatedStatus,
+          };
         }
-        dispatch(setShouldFetchData(false));
-    }, [selectedModel, shouldFetchData]);
+        return item;
+      });
+      setData(updatedData);
+    } catch (error) {
+      console.error("Error recording click:", error);
+    }
+  };
 
-    const fetchAndSetData = async (selectedModel: string) => {
-        try {
-            const fetchedData = await fetchProductsData(selectedModel);
-            setData(fetchedData);
-        } catch (error) {
-            console.error('Error fetching data:', error);
-        }
-    };
-
-    const handleLinkClick = async (link: string) => {
-        try {
-            await recordClick(userID, link);
-            const updatedStatus = await fetchProductStatus(link);
-            const updatedData = data.map((item) => {
-                if (item.link === link) {
-                    return {
-                        ...item,
-                        status: updatedStatus,
-                    };
-                }
-                return item;
-            });
-            setData(updatedData);
-        } catch (error) {
-            console.error('Error recording click:', error);
-        }
-    };
-
-    return (
-        <>
-            <Scrollbars style={{ minWidth: 300, minHeight: 690, maxHeight: 700 }}>
-                <Table>
-                    <TableHead>
-                        <TableRow>
-                            <TableHeader>Link</TableHeader>
-                            <TableHeader>Tytuł</TableHeader>
-                            <TableHeader>Cena</TableHeader>
-                            <TableHeader>Uszkodzenia</TableHeader>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {data.map((item, index) => (
-                            <TableRow key={index}>
-                                <TableData>
-                                    <Link
-                                        href={item.link}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        onMouseDown={() => handleLinkClick(item.link)}
-                                        className={
-                                            typeof item.status === 'string'
-                                                ? item.status.toLowerCase()
-                                                : ''
-                                        }
-                                    >
-                                        Otwórz link
-                                    </Link>
-                                </TableData>
-                                <TableData>{item.title}</TableData>
-                                <TableData>{item.price}</TableData>
-                                <TableData>
-                                    {item.is_damaged ? 'Tak' : 'Brak'}
-                                </TableData>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </Scrollbars>
-        </>
-    );
+  return (
+    <>
+      <Scrollbars style={{ minWidth: 300, minHeight: 690, maxHeight: 700 }}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableHeader>Link</TableHeader>
+              <TableHeader>Tytuł</TableHeader>
+              <TableHeader>Cena</TableHeader>
+              <TableHeader>Uszkodzenia</TableHeader>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {data.map((item, index) => (
+              <TableRow key={index}>
+                <TableData>
+                  <Link
+                    href={item.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onMouseDown={() => handleLinkClick(item.link)}
+                    className={
+                      typeof item.status === "string"
+                        ? item.status.toLowerCase()
+                        : ""
+                    }
+                  >
+                    Otwórz link
+                  </Link>
+                </TableData>
+                <TableData>{item.title}</TableData>
+                <TableData>{item.price}</TableData>
+                <TableData>{item.is_damaged ? "Tak" : "Brak"}</TableData>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </Scrollbars>
+    </>
+  );
 };
 
 const Link = styled.a`
@@ -118,7 +115,7 @@ const Link = styled.a`
   font-weight: 500;
 
   &.red {
-    content: 'dupa';
+    content: "dupa";
     color: violet;
   }
 

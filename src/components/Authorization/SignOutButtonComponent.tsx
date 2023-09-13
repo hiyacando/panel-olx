@@ -1,5 +1,5 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
 
 interface SignOutButtonProps {
   onLogout: () => void;
@@ -7,13 +7,11 @@ interface SignOutButtonProps {
 
 const SignOutButtonComponent: React.FC<SignOutButtonProps> = ({ onLogout }) => {
   const handleSignOut = () => {
-    localStorage.removeItem('authToken');
+    localStorage.removeItem("authToken");
     onLogout();
   };
 
-  return (
-    <ScrapeButton onClick={handleSignOut}>Wyloguj się!</ScrapeButton>
-  );
+  return <ScrapeButton onClick={handleSignOut}>Wyloguj się!</ScrapeButton>;
 };
 
 const ScrapeButton = styled.span`

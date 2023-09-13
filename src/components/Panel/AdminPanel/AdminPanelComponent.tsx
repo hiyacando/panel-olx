@@ -11,17 +11,13 @@ interface AdminPanelComponentProps {
 }
 
 const AdminPanelComponent: React.FC<AdminPanelComponentProps> = () => {
-  const [activeTab, setActiveTab] = useState('Users');
-
-
-
+  const [activeTab, setActiveTab] = useState("Users");
 
   return (
     <>
       <HeroMain>
         <Title>PANEL ADMINISTRATORA</Title>
         <Wrapper>
-
           <NavWrapper>
             <NavFrame>
               <NavItem
@@ -30,25 +26,25 @@ const AdminPanelComponent: React.FC<AdminPanelComponentProps> = () => {
               >
                 Użytkownicy
               </NavItem>
-              <NavItem isActive={activeTab === "Bookmarks"}
-                onClick={() => setActiveTab("Bookmarks")}>Zakładki</NavItem>
+              <NavItem
+                isActive={activeTab === "Bookmarks"}
+                onClick={() => setActiveTab("Bookmarks")}
+              >
+                Zakładki
+              </NavItem>
               <NavItem
                 isActive={activeTab === "Statistics"}
                 onClick={() => setActiveTab("Statistics")}
-              >Statystyki</NavItem>
-
-
-
+              >
+                Statystyki
+              </NavItem>
             </NavFrame>
           </NavWrapper>
           {activeTab === "Users" && <UsersTabComponent />}
           {activeTab === "Bookmarks" && <BookmarksTabComponent />}
           {activeTab === "Statistics" && <StatsTabComponent />}
-
-
         </Wrapper>
       </HeroMain>
-
     </>
   );
 };
@@ -118,7 +114,6 @@ const HeroMain = styled.div`
   max-width: 25rem;
   width: 100%;
   margin-left: 1rem;
-  
 `;
 
 const Title = styled.h1`

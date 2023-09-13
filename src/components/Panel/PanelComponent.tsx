@@ -4,153 +4,140 @@ import ScrapeButtonComponent from "./ScrapeButtonComponent";
 import SignOutButtonComponent from "../Authorization/SignOutButtonComponent";
 import DataTable from "./DataTableComponent";
 import "animate.css";
-import { fetchNavItems, fetchUserInfo } from '../../utils/axios-service';
-import { selectNavItems, selectSelectedModel, setSelectedModel, setNavItems } from '../../redux/models/navItems';
-import { useSelector, useDispatch } from 'react-redux';
+import { fetchNavItems } from "../../utils/axios-service";
+import {
+  selectNavItems,
+  selectSelectedModel,
+  setSelectedModel,
+  setNavItems,
+} from "../../redux/models/navItems";
+import { useSelector, useDispatch } from "react-redux";
+import { selectUser } from "../../redux/models/user"; 
 
 interface PanelComponentProps {
-    token: string | null;
-    userID: string | null;
-    userAvatar: string | null;
-    onLogout: () => void;
-    userRole: string | null;
-    userEmail: string | null;
+  token: string | null;
+  onLogout: () => void;
 }
 
-const PanelComponent: React.FC<PanelComponentProps> = ({ token, userID, userAvatar, onLogout, userEmail, userRole }) => {
-    const dispatch = useDispatch();
-    const selectedModel = useSelector(selectSelectedModel);
-    const navItems = useSelector(selectNavItems);
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const [, setShouldFetchData] = useState(true);
-    const [, setIsAdmin] = useState(false);
+const PanelComponent: React.FC<PanelComponentProps> = ({ token, onLogout }) => {
+  const dispatch = useDispatch();
+  const selectedModel = useSelector(selectSelectedModel);
+  const navItems = useSelector(selectNavItems);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [, setShouldFetchData] = useState(true);
+  const user = useSelector(selectUser);
 
+  const handleModelClick = (model: string) => {
+    if (model !== selectedModel) {
+      setShouldFetchData(true);
+      dispatch(setSelectedModel(model));
+    }
+    setIsMenuOpen(false);
+  };
 
-    const handleModelClick = (model: string) => {
-        if (model !== selectedModel) {
-            setShouldFetchData(true);
-            dispatch(setSelectedModel(model));
-        }
-        setIsMenuOpen(false);
-    };
+  const handleMenuToggle = () => {
+    setIsMenuOpen(!isMenuOpen);
+    if (!isMenuOpen) {
+      setShouldFetchData(false);
+    }
+  };
+  const visibleNavItems = navItems.slice(0, 4);
 
-    const handleMenuToggle = () => {
-        setIsMenuOpen(!isMenuOpen);
-        if (!isMenuOpen) {
-            setShouldFetchData(false);
-        }
-    };
-    const visibleNavItems = navItems.slice(0, 4);
+  useEffect(() => {
+    if (token) {
+      fetchNavItems()
+        .then((navItemsData) => {
+          dispatch(setNavItems(navItemsData));
+        })
+        .catch((error) => {
+          console.error("Error while fetching data:", error);
+        });
+    }
+  }, [dispatch, token]);
 
-    useEffect(() => {
-        if (token) {
-            fetchNavItems()
-                .then(navItemsData => {
+  return (
+    <>
+      <HeroMain>
+        <Title>PANEL OGŁOSZEŃ</Title>
+        <Wrapper>
+          <MenuContainer>
+            <UserWrapper>
+              <Avatar src={user.avatar!} />
+              <UserInfo>
+                <UserName>{user.email}</UserName>
+                <UserRole>{user.role}</UserRole>
+                <SignOutButtonComponent onLogout={onLogout} />
+              </UserInfo>
+            </UserWrapper>
+          </MenuContainer>
+          <NavWrapper>
+            <NavFrame>
+              {visibleNavItems.map((navItem, index) => (
+                <NavItem
+                  key={index}
+                  onClick={() => handleModelClick(navItem.file_name)}
+                  isActive={selectedModel === navItem.file_name}
+                >
+                  {navItem.title}
+                </NavItem>
+              ))}
+              <NavItem onClick={handleMenuToggle} isActive={isMenuOpen}>
+                Inne
+                {isMenuOpen && (
+                  <SubMenu isActive={isMenuOpen}>
+                    {navItems.slice(4).map((navItem, index) => (
+                      <SubNavItem
+                        key={index}
+                        onClick={() => {
+                          handleModelClick(navItem.file_name);
+                          if (!isMenuOpen) {
+                            setShouldFetchData(true);
+                          }
+                        }}
+                        isActive={selectedModel === navItem.file_name}
+                      >
+                        {navItem.title}
+                      </SubNavItem>
+                    ))}
+                  </SubMenu>
+                )}
+              </NavItem>
 
-                    dispatch(setNavItems(navItemsData));
-                    return fetchUserInfo();
-                })
-                .then(response => {
-                    const userRole = response.role;
-                    setIsAdmin(userRole === 'admin');
-                })
-                .catch(error => {
-                    console.error('Error while fetching data:', error);
-                    setIsAdmin(false);
-                });
-        }
-    }, [dispatch, token, userID]);
-
-    return (
-        <>
-
-            <HeroMain>
-                <Title>PANEL OGŁOSZEŃ</Title>
-                <Wrapper>
-                    <MenuContainer>
-                        <UserWrapper>
-                            <Avatar src={userAvatar!} />
-                            <UserInfo>
-                                <UserName>{userEmail}</UserName>
-                                <UserRole>{userRole}</UserRole>
-                                <SignOutButtonComponent onLogout={onLogout} />
-                            </UserInfo>
-                        </UserWrapper>
-
-                    </MenuContainer>
-                    <NavWrapper>
-                        <NavFrame>
-                            {visibleNavItems.map((navItem, index) => (
-                                <NavItem
-                                    key={index}
-                                    onClick={() => handleModelClick(navItem.file_name)}
-                                    isActive={selectedModel === navItem.file_name}
-                                >
-                                    {navItem.title}
-                                </NavItem>
-                            ))}
-                            <NavItem onClick={handleMenuToggle} isActive={isMenuOpen}>
-                                Inne
-                                {isMenuOpen && (
-                                    <SubMenu isActive={isMenuOpen}>
-                                        {navItems.slice(4).map((navItem, index) => (
-                                            <SubNavItem
-                                                key={index}
-                                                onClick={() => {
-                                                    handleModelClick(navItem.file_name);
-                                                    if (!isMenuOpen) {
-                                                        setShouldFetchData(true);
-                                                    }
-                                                }}
-                                                isActive={selectedModel === navItem.file_name}
-                                            >
-                                                {navItem.title}
-                                            </SubNavItem>
-                                        ))}
-                                    </SubMenu>
-                                )}
-                            </NavItem>
-
-                            <ScrapeButtonComponent />
-                        </NavFrame>
-                    </NavWrapper>
-                    <DataTable userID={userID} />
-                </Wrapper>
-            </HeroMain>
-        </>
-    );
+              <ScrapeButtonComponent />
+            </NavFrame>
+          </NavWrapper>
+          <DataTable />
+        </Wrapper>
+      </HeroMain>
+    </>
+  );
 };
 const MenuContainer = styled.div`
-position: fixed;
-flex-direction: column;
-float: left;
-`
+  position: fixed;
+  flex-direction: column;
+  float: left;
+`;
 const UserInfo = styled.div`
-display: flex;
-flex-direction: column;
-`
+  display: flex;
+  flex-direction: column;
+`;
 const UserRole = styled.span`
-color: #ffffff;
-
-`
+  color: #ffffff;
+`;
 const UserName = styled.span`
-color: #ffffff;
-`
+  color: #ffffff;
+`;
 const UserWrapper = styled.div`
-display: flex;
-margin-bottom: 0.5rem;
-
-`
+  display: flex;
+  margin-bottom: 0.5rem;
+`;
 const Avatar = styled.img`
-width: 3.5rem;
-margin-right: 0.5rem; /* Dodaj odstęp od prawej strony avatara */
-background-color: rgba(0, 0, 0, 0.2);
-border-radius: 0.5rem;
+  width: 3.5rem;
+  margin-right: 0.5rem; /* Dodaj odstęp od prawej strony avatara */
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 0.5rem;
+`;
 
-`
-const OptionsWrapper = styled.div`
-display: block;
-`
 const SubMenu = styled.ul<{ isActive: boolean }>`
   display: ${({ isActive }) => (isActive ? "block" : "none")};
   list-style-type: none;
@@ -179,7 +166,7 @@ const NavItem = styled.li<{ isActive: boolean }>`
   display: flex;
   list-style-type: none;
   padding: 0;
-  
+
   gap: 3rem;
   padding: 0 2rem;
   line-height: 2.5rem;
@@ -194,18 +181,17 @@ const NavItem = styled.li<{ isActive: boolean }>`
   }
 `;
 const NavFrame = styled.ul`
-display: flex;
-list-style-type: none;
-padding: 0;
-justify-content: center;
-
+  display: flex;
+  list-style-type: none;
+  padding: 0;
+  justify-content: center;
+  align-items: center;
 `;
-const NavWrapper = styled.div`
-`;
+const NavWrapper = styled.div``;
 const Wrapper = styled.div`
-margin-top: 1rem;
-display: flex-start;
-justify-content: center;
+  margin-top: 1rem;
+  display: flex-start;
+  justify-content: center;
 `;
 
 const HeroMain = styled.div`
@@ -221,7 +207,6 @@ const HeroMain = styled.div`
   min-width: 70rem;
   width: 100%;
   display: block;
-  
 `;
 
 const Title = styled.h1`
