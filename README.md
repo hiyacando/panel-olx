@@ -25,5 +25,5 @@
   <li>Wymagana werfikacja konta przez administratora po rejestracji w celu otrzymania dostępu do panelu</li>
   <li>Przycisk umożliwiający wyświetlenie informacji o tym kto i kiedy otworzył dany link</li>
   <li>Funkcja dodawania komentarza dla danego ogłoszenia i oznaczania procesu (np. w trakcie zakupu, kupione, scam, nieaktualne)</li>
-  <li>Dodanie dokumentacji i komentarzy w kodzie</li>
+  <li>Aktualizacja dokumentacji i dodanie komentarzy w kodzie</li>
 </ul>
