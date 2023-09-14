@@ -31,10 +31,8 @@ def verify_jwt_token(token):
         return "Invalid"  
 
 def verifyUser(user_id):
-    # Sprawdzanie, czy użytkownik istnieje w bazie danych
     user = auth_bp.db.users.find_one({'id': user_id})
     if user:
-        # Aktualizacja roli użytkownika na "user"
         auth_bp.db.users.update_one({'id': user_id}, {'$set': {'role': 'user'}})
         return jsonify({'message': 'User verified successfully'}), 200
     else:
@@ -47,9 +45,8 @@ def verify_user_route(user_id):
         payload = jwt.decode(token, current_app.config['SECRET_KEY'], algorithms=['HS256'])
         user_email = payload['sub']
         user = auth_bp.db.users.find_one({'email': user_email})
-        
         if user and user.get('role') == 'admin':
-            return verifyUser(user_id)  # Wywołanie metody verifyUser
+            return verifyUser(user_id)  
         else:
             return jsonify({'error': 'Unauthorized'}), 401
     except jwt.ExpiredSignatureError:
