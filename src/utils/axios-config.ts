@@ -4,6 +4,7 @@ import Cookies from "js-cookie";
 const axiosInstance = axios.create();
 
 axiosInstance.defaults.baseURL = "http://localhost:2137";
+axiosInstance.defaults.withCredentials = true;
 
 axiosInstance.interceptors.request.use((config) => {
   const authToken = Cookies.get("authToken");
