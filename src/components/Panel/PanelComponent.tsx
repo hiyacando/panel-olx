@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import ScrapeButtonComponent from "./ScrapeButtonComponent";
 import SignOutButtonComponent from "../Authorization/SignOutButtonComponent";
@@ -12,14 +12,13 @@ import {
   setNavItems,
 } from "../../redux/models/navItems";
 import { useSelector, useDispatch } from "react-redux";
-import { selectUser } from "../../redux/models/user"; 
+import { selectUser } from "../../redux/models/user";
 
 interface PanelComponentProps {
-  token: string | null;
   onLogout: () => void;
 }
 
-const PanelComponent: React.FC<PanelComponentProps> = ({ token, onLogout }) => {
+const PanelComponent: React.FC<PanelComponentProps> = ({ onLogout }) => {
   const dispatch = useDispatch();
   const selectedModel = useSelector(selectSelectedModel);
   const navItems = useSelector(selectNavItems);
@@ -41,19 +40,18 @@ const PanelComponent: React.FC<PanelComponentProps> = ({ token, onLogout }) => {
       setShouldFetchData(false);
     }
   };
+
   const visibleNavItems = navItems.slice(0, 4);
 
   useEffect(() => {
-    if (token) {
-      fetchNavItems()
-        .then((navItemsData) => {
-          dispatch(setNavItems(navItemsData));
-        })
-        .catch((error) => {
-          console.error("Error while fetching data:", error);
-        });
-    }
-  }, [dispatch, token]);
+    fetchNavItems()
+      .then((navItemsData) => {
+        dispatch(setNavItems(navItemsData));
+      })
+      .catch((error) => {
+        console.error("Error while fetching data:", error);
+      });
+  }, [dispatch]);
 
   return (
     <>

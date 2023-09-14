@@ -14,7 +14,7 @@ def generate_jwt_token(user_email, user_id):
             'iat': datetime.datetime.utcnow(),
             'sub': user_email,
             'user_id': user_id, 
-            'role': user.get('role', 'user')
+            'role': user.get('role', 'unverifed')
         }
         token = jwt.encode(payload, current_app.config['SECRET_KEY'], algorithm='HS256')
         return token
@@ -30,7 +30,33 @@ def verify_jwt_token(token):
     except jwt.InvalidTokenError:
         return "Invalid"  
 
-
+def verifyUser(user_id):
+    # Sprawdzanie, czy użytkownik istnieje w bazie danych
+    user = auth_bp.db.users.find_one({'id': user_id})
+    if user:
+        # Aktualizacja roli użytkownika na "user"
+        auth_bp.db.users.update_one({'id': user_id}, {'$set': {'role': 'user'}})
+        return jsonify({'message': 'User verified successfully'}), 200
+    else:
+        return jsonify({'error': 'User not found'}), 404
+@auth_bp.route('/verify_user/<string:user_id>', methods=['POST'])
+def verify_user_route(user_id):
+    token = request.headers.get('Authorization').split()[1]
+    
+    try:
+        payload = jwt.decode(token, current_app.config['SECRET_KEY'], algorithms=['HS256'])
+        user_email = payload['sub']
+        user = auth_bp.db.users.find_one({'email': user_email})
+        
+        if user and user.get('role') == 'admin':
+            return verifyUser(user_id)  # Wywołanie metody verifyUser
+        else:
+            return jsonify({'error': 'Unauthorized'}), 401
+    except jwt.ExpiredSignatureError:
+        return jsonify({'error': 'Expired token'}), 401
+    except jwt.InvalidTokenError:
+        return jsonify({'error': 'Invalid token'}), 401
+    
 @auth_bp.route('/login', methods=['POST'])
 def login():
     data = request.get_json()
@@ -59,7 +85,7 @@ def register():
     dicebear_url = f"https://avatars.dicebear.com/api/{style}/{user_id}.svg"
     hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
     
-    new_user_data = {'id': user_id, 'email': email, 'password': hashed_password, 'role': 'user', 'avatar': dicebear_url}
+    new_user_data = {'id': user_id, 'email': email, 'password': hashed_password, 'role': 'unverifed', 'avatar': dicebear_url}
     auth_bp.db.users.insert_one(new_user_data)
 
     token = generate_jwt_token(email, user_id)

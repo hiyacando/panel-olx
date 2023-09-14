@@ -27,7 +27,8 @@ const App = () => {
         .then((response) => {
           const { email, user_id, role, avatar } = response;
           const isAdmin = role === "admin";
-          dispatch(setUser({ email, user_id, role, avatar, isAdmin }));
+          const isVerifed = role === "user";
+          dispatch(setUser({ email, user_id, role, avatar, isAdmin, isVerifed }));
           setIsTokenValid(true);
         })
         .catch((error) => {
@@ -59,9 +60,14 @@ const App = () => {
             />
           ) : (
             <Wrapper>
-              <PanelComponent token={token} onLogout={handleLogout} />
+              {user.isVerifed ? (
+                <PanelComponent onLogout={handleLogout} />
+              ) : (
+                <>Oczekiwanie na weryfikacje konta.</>
+              )}
+             
               {user.isAdmin && (
-                <AdminPanelComponent token={token} userID={user.user_id} />
+                <AdminPanelComponent />
               )}
             </Wrapper>
           )}

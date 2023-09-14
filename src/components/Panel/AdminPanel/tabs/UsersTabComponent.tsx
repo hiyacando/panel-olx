@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { fetchAllUsers, deleteUser } from "../../../../utils/axios-service";
-
+import { fetchAllUsers, deleteUser, verifyUser } from "../../../../utils/axios-service";
+import { FaUserTag, FaUserTimes} from 'react-icons/fa'
 interface UserData {
   id: string;
   email: string;
@@ -33,6 +33,21 @@ const UsersTabComponent: React.FC = () => {
       });
   };
 
+  const handleVerifyUser = (userId: string) => {
+    verifyUser(userId)
+      .then(() => {
+        const updatedUsersData = usersData.map((user) => {
+          if (user.id === userId) {
+            return { ...user, role: "user" }; 
+          }
+          return user;
+        });
+        setUsersData(updatedUsersData);
+      })
+      .catch((error) => {
+        console.error("Error verifying user:", error);
+      });
+  };
   return (
     <>
       <Table>
@@ -53,9 +68,15 @@ const UsersTabComponent: React.FC = () => {
               <TableData>{user.email}</TableData>
               <TableData>{user.role}</TableData>
               <TableData>
-                <DeleteButton onClick={() => handleDeleteUser(user.id)}>
-                  USUŃ
-                </DeleteButton>
+                <ButtonGroup>
+                <Button onClick={() => handleDeleteUser(user.id)}>
+                  <FaUserTimes size={20}/>
+                </Button>
+                <Button onClick={() => handleVerifyUser(user.id)}>
+                  <FaUserTag size={20}/>
+                </Button>
+                </ButtonGroup>
+
               </TableData>
             </TableRow>
           ))}
@@ -64,10 +85,15 @@ const UsersTabComponent: React.FC = () => {
     </>
   );
 };
-const DeleteButton = styled.button`
+const ButtonGroup = styled.div`
+align-items: center;
+
+`
+const Button = styled.button`
   background: none;
   border: none;
   color: violet;
+  padding: 0.1rem;
   &:hover {
     cursor: pointer;
   }

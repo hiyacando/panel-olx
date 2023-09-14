@@ -5,12 +5,8 @@ import UsersTabComponent from "./tabs/UsersTabComponent";
 import BookmarksTabComponent from "./tabs/BookmarksTabComponent";
 import StatsTabComponent from "./tabs/StatsTabComponent";
 
-interface AdminPanelComponentProps {
-  token: string | null;
-  userID: string | null;
-}
 
-const AdminPanelComponent: React.FC<AdminPanelComponentProps> = () => {
+const AdminPanelComponent: React.FC = () => {
   const [activeTab, setActiveTab] = useState("Users");
 
   return (
@@ -49,29 +45,6 @@ const AdminPanelComponent: React.FC<AdminPanelComponentProps> = () => {
   );
 };
 
-// const SubMenu = styled.ul<{ isActive: boolean }>`
-//   display: ${({ isActive }) => (isActive ? "block" : "none")};
-//   list-style-type: none;
-//   padding: 0.5rem 0.2rem;
-//   margin-top: 2.6rem;
-//   position: absolute;
-//   background-color: rgba(0, 0, 0, 0.9);
-//   border-radius: 0 0 0.6rem 0.6rem;
-//   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-//   z-index: 1;
-// `;
-
-// const SubNavItem = styled.li<{ isActive: boolean }>`
-//   color: ${({ isActive }) => (isActive ? "violet" : "white")};
-//   font-size: 1rem;
-
-//   &:hover {
-//     color: violet;
-//     background-color: rgba(255, 255, 255, 0.1);
-//     cursor: pointer;
-//     border-radius: 0.5rem;
-//   }
-// `;
 const NavItem = styled.li<{ isActive: boolean }>`
   margin: 0;
   display: flex;

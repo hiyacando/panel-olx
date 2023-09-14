@@ -151,3 +151,12 @@ export const fetchProductStatus = async (link: string) => {
     throw error;
   }
 };
+export const verifyUser = async (userId: string) => {
+  try {
+    const response = await axiosInstance.post(`/auth/verify_user/${userId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error verifying user:", error);
+    throw error;
+  }
+};

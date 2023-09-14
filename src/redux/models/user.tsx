@@ -7,6 +7,7 @@ interface UserState {
   role: string | null;
   avatar: string | null;
   isAdmin: boolean;
+  isVerifed: boolean;
 }
 
 const initialState: UserState = {
@@ -15,6 +16,7 @@ const initialState: UserState = {
   role: null,
   avatar: null,
   isAdmin: false,
+  isVerifed: false,
 };
 
 const userSlice = createSlice({
@@ -24,8 +26,9 @@ const userSlice = createSlice({
     setUser: (state, action: PayloadAction<UserState>) => {
       const { email, user_id, role, avatar } = action.payload;
       const isAdmin = role === "admin";
+      const isVerifed = role === "user" || role === "admin";
 
-      return { ...state, email, user_id, role, avatar, isAdmin };
+      return { ...state, email, user_id, role, avatar, isAdmin, isVerifed };
     },
   },
 });
