@@ -8,11 +8,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { setShouldFetchDataTrue } from "./redux/models/navItems";
 import { setUser, selectUser } from "./redux/models/user";
 import { fetchUserInfo } from "./utils/axios-service";
+import Cookies from 'js-cookie';
 
 const App = () => {
   const dispatch = useDispatch();
-  const storedToken = localStorage.getItem("authToken");
-  const [token, setToken] = useState<string | null>(storedToken);
+  const [token, setToken] = useState<string | null>(() => {
+    return Cookies.get('authToken') || null;
+  });
   const [isTokenValid, setIsTokenValid] = useState(false);
   const user = useSelector(selectUser);
   const [activeComponent, setActiveComponent] = useState<"SignIn" | "Register">(
@@ -36,15 +38,15 @@ const App = () => {
   }, [token, dispatch]);
 
   const handleLogin = (receivedToken: string) => {
+    Cookies.set('authToken', receivedToken, { expires: 1 }); 
     setToken(receivedToken);
-    localStorage.setItem("authToken", receivedToken);
     dispatch(setShouldFetchDataTrue());
   };
 
   const handleLogout = () => {
+    Cookies.remove('authToken'); 
     setToken(null);
     setIsTokenValid(false);
-    localStorage.removeItem("authToken");
   };
   return (
     <>

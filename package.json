@@ -16,6 +16,7 @@
     "axios": "^1.4.0",
     "buffer": "^6.0.3",
     "formik": "^2.4.3",
+    "js-cookie": "^3.0.5",
     "jsonwebtoken": "^9.0.1",
     "react": "^18.2.0",
     "react-custom-scrollbars-2": "^4.5.0",
@@ -26,6 +27,7 @@
     "yup": "^1.2.0"
   },
   "devDependencies": {
+    "@types/js-cookie": "^3.0.3",
     "@types/jsonwebtoken": "^9.0.2",
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
