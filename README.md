@@ -26,4 +26,5 @@
   <li>Przycisk umożliwiający wyświetlenie informacji o tym kto i kiedy otworzył dany link</li>
   <li>Funkcja dodawania komentarza dla danego ogłoszenia i oznaczania procesu (np. w trakcie zakupu, kupione, scam, nieaktualne)</li>
   <li>Aktualizacja dokumentacji i dodanie komentarzy w kodzie</li>
+  <li>JWT zapis cookie</li>
 </ul>
