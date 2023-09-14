@@ -9,7 +9,7 @@ from routes import init_app
 from decouple import config
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, supports_credentials=True)
 SECRET_KEY = config('SECRET_KEY')
 
 app.config['SECRET_KEY'] = SECRET_KEY 
