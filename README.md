@@ -10,6 +10,7 @@
 <h2>Przykład użycia:</h2>
 <ol>
   <li>Zarejestruj konto wpisując adres e-mail oraz hasło w zakładce "Rejestracja"</li>
+  <li>Poczekaj na weryfikacje konta przez Administratora</li>
   <li>Zaloguj się używając danych logowania</li>
   <li>Po pomyślnym zalogowaniu wybierz interesującą Cię zakładkę</li>
   <li>Następnie zostanie wyświetlona tabela z listą ogłoszeń</li>
@@ -22,7 +23,6 @@
   <li>Zakładka "Zakładki" w panelu administratora umożliwiająca dodanie nowych zakładek z ogłoszeniami dostępnych dla użytkowników</li>
   <li>Zakładka "Statystyki" w panelu administratora wyświetlająca statystyki dla wybranego użytkownika (ilość klikniętych ogłoszeń)</li>
   <li>Poprawa funkcjonalności przycisku aktualizacji danych czyli aktualizacja danych tylko i wyłącznie dla wybranej aktualnie przez użytkownika zakładki i limit czasowy 30 min (czyli po odświeżeniu danych żaden użytkownik oprócz administratora nie może przez 30 minut tego zrobić)</li>
-  <li>Wymagana werfikacja konta przez administratora po rejestracji w celu otrzymania dostępu do panelu</li>
   <li>Przycisk umożliwiający wyświetlenie informacji o tym kto i kiedy otworzył dany link</li>
   <li>Funkcja dodawania komentarza dla danego ogłoszenia i oznaczania procesu (np. w trakcie zakupu, kupione, scam, nieaktualne)</li>
   <li>Aktualizacja dokumentacji i dodanie komentarzy w kodzie</li>
