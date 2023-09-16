@@ -1,12 +1,12 @@
 from datetime import datetime
 
 class Click:
-    clicked_users = set()  # Zbiór przechowujący ID użytkowników, którzy kliknęli na link
+    clicked_users = set()  
 
     def __init__(self, user_id, link):
         self.user_id = user_id
         self.link = link
-        self.timestamp = datetime.now()  # Dodaj czas w momencie tworzenia obiektu Click
+        self.timestamp = datetime.now() 
 
 
     def save(self):
