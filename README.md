@@ -3,7 +3,7 @@
 <h2>Funkcje</h2>
 <ul>
   <li>Autoryzacja użytkowników</li>
-  <li>Pobieranie listy ogłoszeń i przetwarzanie danych do tabeli w odpowiedniej zakładce na podstawie URL</li>
+  <li>Pobieranie listy ogłoszeń (na ten moment scraping, jak otrzymam dostęp do API olx to przez API) i przetwarzanie danych do tabeli w odpowiedniej zakładce na podstawie URL</li>
   <li>Oznaczanie klikniętych ogłoszeń widoczne dla wszystkich użytkowników</li>
   <li>Panel administracyjny umożliwiający zarządzanie użytkownikami i dodawanie nowych zakładek</li>
 </ul>
