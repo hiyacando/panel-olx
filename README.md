@@ -20,7 +20,7 @@
 <h2>TODO:</h2>
 <ul>
   <li>Projekt interfejsu</li>
-  <li>Zakładka "Zakładki" w panelu administratora umożliwiająca dodanie nowych zakładek z ogłoszeniami dostępnych dla użytkowników</li>
+  <li>Zakładka "Zakładki" w panelu administratora umożliwiająca zarządzanie zakładkami ogłoszeń</li>
   <li>Zakładka "Statystyki" w panelu administratora wyświetlająca statystyki dla wybranego użytkownika (ilość klikniętych ogłoszeń)</li>
   <li>Poprawa funkcjonalności przycisku aktualizacji danych czyli aktualizacja danych tylko i wyłącznie dla wybranej aktualnie przez użytkownika zakładki i limit czasowy 30 min (czyli po odświeżeniu danych żaden użytkownik oprócz administratora nie może przez 30 minut tego zrobić)</li>
   <li>Przycisk umożliwiający wyświetlenie informacji o tym kto i kiedy otworzył dany link</li>
