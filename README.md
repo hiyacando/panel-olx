@@ -28,4 +28,5 @@
   <li>Aktualizacja dokumentacji i dodanie komentarzy w kodzie</li>
   <li>Dodać grupy do ktorych przydzielani sa uzytkownicy (np firma1 firma2) i uzalezniac wyswietlanie informacji dot ogloszen takich jak oznaczrnia do tych grup w celu unikniecia kolizji</li>
   <li>Panel użytkownika</li>
+  <li>Migracja z MongoDB do MySQL</li>
 </ul>
