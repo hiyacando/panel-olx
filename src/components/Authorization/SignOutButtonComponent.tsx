@@ -1,27 +1,17 @@
 import React from "react";
-import styled from "styled-components";
+import Button from "../Panel/UI/Button";
 
 interface SignOutButtonProps {
   onLogout: () => void;
 }
 
 const SignOutButtonComponent: React.FC<SignOutButtonProps> = ({ onLogout }) => {
-  const handleSignOut = () => {
-    localStorage.removeItem("authToken");
-    onLogout();
-  };
 
-  return <ScrapeButton onClick={handleSignOut}>Wyloguj się!</ScrapeButton>;
+
+  return <>
+  <Button text="Wyloguj się" onClick={onLogout} /> 
+  </>;
 };
 
-const ScrapeButton = styled.span`
-  font-weight: 600;
-  padding: 0;
-  color: white;
-  &:hover {
-    cursor: pointer;
-    color: violet;
-  }
-`;
 
 export default SignOutButtonComponent;

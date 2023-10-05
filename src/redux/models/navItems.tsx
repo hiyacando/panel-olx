@@ -2,9 +2,9 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../store";
 
 interface NavItem {
-  id: number;
+  bookmark_uuid: string;
   url: string;
-  file_name: string;
+  model: string;
   title: string;
 }
 
@@ -16,7 +16,7 @@ interface NavItemsState {
 
 const initialState: NavItemsState = {
   navItems: [],
-  selectedModel: "iphone-11-pro",
+  selectedModel: "",
   shouldFetchData: true,
 };
 

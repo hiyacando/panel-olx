@@ -9,6 +9,11 @@ module.exports = {
   ignorePatterns: ['dist', '.eslintrc.cjs'],
   parser: '@typescript-eslint/parser',
   plugins: ['react-refresh'],
+  settings: {
+    'import/resolver': {
+      typescript: {}, // Dodaj konfigurację import resolver dla TypeScript
+    },
+  },
   rules: {
     'react-refresh/only-export-components': [
       'warn',

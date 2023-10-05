@@ -1,17 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import ScrapeButtonComponent from "./ScrapeButtonComponent";
 import SignOutButtonComponent from "../Authorization/SignOutButtonComponent";
 import DataTable from "./DataTableComponent";
-import "animate.css";
-import { fetchNavItems } from "../../utils/axios-service";
+import { useSelector, useDispatch } from "react-redux";
 import {
   selectNavItems,
   selectSelectedModel,
   setSelectedModel,
-  setNavItems,
 } from "../../redux/models/navItems";
-import { useSelector, useDispatch } from "react-redux";
 import { selectUser } from "../../redux/models/user";
 
 interface PanelComponentProps {
@@ -40,18 +37,13 @@ const PanelComponent: React.FC<PanelComponentProps> = ({ onLogout }) => {
       setShouldFetchData(false);
     }
   };
+  useEffect(() => {
+    if (!selectedModel && navItems.length > 0) {
+      dispatch(setSelectedModel(navItems[0].model));
+    }
+  }, [selectedModel, navItems, dispatch]);
 
   const visibleNavItems = navItems.slice(0, 4);
-
-  useEffect(() => {
-    fetchNavItems()
-      .then((navItemsData) => {
-        dispatch(setNavItems(navItemsData));
-      })
-      .catch((error) => {
-        console.error("Error while fetching data:", error);
-      });
-  }, [dispatch]);
 
   return (
     <>
@@ -59,12 +51,13 @@ const PanelComponent: React.FC<PanelComponentProps> = ({ onLogout }) => {
         <Title>PANEL OGŁOSZEŃ</Title>
         <Wrapper>
           <MenuContainer>
+            <SignOutButtonComponent onLogout={onLogout} />
             <UserWrapper>
               <Avatar src={user.avatar!} />
               <UserInfo>
                 <UserName>{user.email}</UserName>
                 <UserRole>{user.role}</UserRole>
-                <SignOutButtonComponent onLogout={onLogout} />
+                <UserGroup>{user.group_name}</UserGroup>
               </UserInfo>
             </UserWrapper>
           </MenuContainer>
@@ -73,8 +66,8 @@ const PanelComponent: React.FC<PanelComponentProps> = ({ onLogout }) => {
               {visibleNavItems.map((navItem, index) => (
                 <NavItem
                   key={index}
-                  onClick={() => handleModelClick(navItem.file_name)}
-                  isActive={selectedModel === navItem.file_name}
+                  onClick={() => handleModelClick(navItem.model)}
+                  isActive={selectedModel === navItem.model}
                 >
                   {navItem.title}
                 </NavItem>
@@ -87,12 +80,12 @@ const PanelComponent: React.FC<PanelComponentProps> = ({ onLogout }) => {
                       <SubNavItem
                         key={index}
                         onClick={() => {
-                          handleModelClick(navItem.file_name);
+                          handleModelClick(navItem.model);
                           if (!isMenuOpen) {
                             setShouldFetchData(true);
                           }
                         }}
-                        isActive={selectedModel === navItem.file_name}
+                        isActive={selectedModel === navItem.model}
                       >
                         {navItem.title}
                       </SubNavItem>
@@ -100,7 +93,6 @@ const PanelComponent: React.FC<PanelComponentProps> = ({ onLogout }) => {
                   </SubMenu>
                 )}
               </NavItem>
-
               <ScrapeButtonComponent />
             </NavFrame>
           </NavWrapper>
@@ -110,6 +102,9 @@ const PanelComponent: React.FC<PanelComponentProps> = ({ onLogout }) => {
     </>
   );
 };
+const UserGroup = styled.span`
+  color: #ffffff;
+`;
 const MenuContainer = styled.div`
   position: fixed;
   flex-direction: column;
@@ -131,7 +126,7 @@ const UserWrapper = styled.div`
 `;
 const Avatar = styled.img`
   width: 3.5rem;
-  margin-right: 0.5rem; /* Dodaj odstęp od prawej strony avatara */
+  margin-right: 0.5rem;
   background-color: rgba(0, 0, 0, 0.2);
   border-radius: 0.5rem;
 `;
@@ -164,7 +159,6 @@ const NavItem = styled.li<{ isActive: boolean }>`
   display: flex;
   list-style-type: none;
   padding: 0;
-
   gap: 3rem;
   padding: 0 2rem;
   line-height: 2.5rem;
@@ -202,7 +196,7 @@ const HeroMain = styled.div`
   padding: 1.5rem 1.5rem 1.5rem 1.5rem;
   animation: zoomIn 0.7s;
   transition: all 0.3s ease;
-  min-width: 70rem;
+  min-width: 80rem;
   width: 100%;
   display: block;
 `;

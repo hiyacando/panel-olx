@@ -50,7 +50,7 @@ const DataTable: React.FC = () => {
 
   const handleLinkClick = async (link: string) => {
     try {
-      await recordClick(user.user_id, link);
+      await recordClick(user.user_uuid, link);
       const updatedStatus = await fetchProductStatus(link);
       const updatedData = data.map((item) => {
         if (item.link === link) {
@@ -98,7 +98,7 @@ const DataTable: React.FC = () => {
                   </Link>
                 </TableData>
                 <TableData>{item.title}</TableData>
-                <TableData>{item.price}</TableData>
+                <TableData>{item.price} zł</TableData>
                 <TableData>{item.is_damaged ? "Tak" : "Brak"}</TableData>
               </TableRow>
             ))}
@@ -113,7 +113,7 @@ const Link = styled.a`
   text-decoration: none;
   font-size: 1rem;
   font-weight: 500;
-
+  color: white;
   &.red {
     content: "dupa";
     color: violet;

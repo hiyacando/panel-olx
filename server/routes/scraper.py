@@ -1,10 +1,8 @@
 from flask import Blueprint, jsonify, request
-from bson import json_util
-from middlewares import auth_middleware
 from models.products import Product
-from models.urls import Url
 from models.record_click import Click
 from scraping import run_scraping
+from middlewares import auth_middleware
 scraper_bp = Blueprint('scraper', __name__)
 
 scraper_bp.before_request(auth_middleware)
@@ -18,47 +16,58 @@ def scrape():
 
 @scraper_bp.route('/products/<model>', methods=['GET'])
 def get_products_by_model(model):
-    products = Product.get_products_by_model(model)
-    return json_util.dumps(products)
+    products = Product.query.filter_by(model=model).all()
+    product_list = []
 
-@scraper_bp.route('/urls', methods=['GET'])
-def get_urls():
-    urls = Url.get_all_urls()
-    return json_util.dumps(urls)
+    for product in products:
+        product_data = {
+            'id': product.id,
+            'model': product.model,
+            'link': product.link,
+            'title': product.title,
+            'price': product.price,
+            'is_damaged': product.is_damaged,
+            'status': product.status
+        }
+        product_list.append(product_data)
 
+    return jsonify(product_list)
 @scraper_bp.route('/record_click', methods=['POST'])
 def record_click():
     data = request.get_json()
-    user_id = data.get('user_id')
+    user_uuid = data.get('user_uuid')
     link = data.get('link')
-    existing_click = Click.db['clicks'].find_one({'user_id': user_id, 'link': link})
+    existing_click = Click.get_click_by_user_and_link(user_uuid, link)
+
     if existing_click:
         return jsonify({'message': 'Click already recorded'}), 400
 
-    click = Click(user_id=user_id, link=link)
+    click = Click(user_uuid=user_uuid, link=link)
     click.save()
-    product = Product.db['products'].find_one({'link': link})
+    product = Product.get_product_by_link(link)
+
     if product:
-        product['status'] = 'red'
-        Product.db['products'].update_one({'link': link}, {'$set': {'status': 'red'}})
+        product.update_status('red')
 
     return jsonify({'message': 'Click recorded successfully'}), 200
 
 @scraper_bp.route('/record_click/<path:link>', methods=['GET'])
 def get_recorded_clicks(link):
     clicks = Click.get_clicks_by_link(link)
-    return json_util.dumps(clicks)
+    return jsonify(clicks)
 
 @scraper_bp.route('/recorded_clicks', methods=['GET'])
 def get_all_recorded_clicks():
-    all_clicks = Click.get_all_clicks()  
-    return json_util.dumps(all_clicks)
+    all_clicks = Click.get_all_clicks()
+    return jsonify(all_clicks)
 
 @scraper_bp.route('/product_status/<path:link>', methods=['GET'])
 def get_product_status(link):
-    product = Product.db['products'].find_one({'link': link})
+    product = Product.get_product_by_link(link)
+
     if product:
-        status = product.get('status', 'green')
-        return jsonify({'status': status})
+        status = product.get_status()
+        response = jsonify({'status': status})
+        return response
     else:
         return jsonify({'status': 'not found'}), 404

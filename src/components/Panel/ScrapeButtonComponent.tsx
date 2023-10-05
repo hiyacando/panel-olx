@@ -1,8 +1,8 @@
 import { useState } from "react";
-import styled from "styled-components";
 import { scrapeData } from "../../utils/axios-service";
 import { useDispatch } from "react-redux";
 import { setShouldFetchDataTrue } from "../../redux/models/navItems";
+import Button from "./UI/Button";
 
 const ScrapeButtonComponent = () => {
   const dispatch = useDispatch();
@@ -25,24 +25,13 @@ const ScrapeButtonComponent = () => {
   };
   return (
     <>
-      <ScrapeButton onClick={handleScrapeClick} disabled={scrapingInProgress}>
-        Zaktualizuj dane!
-      </ScrapeButton>
+      <Button
+        text="Zaktualizuj dane!"
+        onClick={handleScrapeClick}
+        disabled={scrapingInProgress}
+      />
     </>
   );
 };
-const ScrapeButton = styled.button`
-  padding: 0;
-  color: white;
-  float: right;
-  font-weight: 600;
-  font-size: 1rem;
-  background: none;
-  border: none;
-  &:hover {
-    cursor: pointer;
-    color: violet;
-  }
-`;
 
 export default ScrapeButtonComponent;

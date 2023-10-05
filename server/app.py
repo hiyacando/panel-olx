@@ -1,27 +1,18 @@
 from flask import Flask
 from flask_cors import CORS
-from pymongo import MongoClient
-from routes.auth import auth_bp
-from models.products import Product
-from models.urls import Url
-from models.record_click import Click
-from routes import init_app
 from decouple import config
-
+from routes import register_blueprints
+from db import db
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
 SECRET_KEY = config('SECRET_KEY')
+app.config['SECRET_KEY'] = SECRET_KEY
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:@localhost/panel-olx'
 
-app.config['SECRET_KEY'] = SECRET_KEY 
-
-client = MongoClient('mongodb://localhost:27017/') 
-db = client['panel-olx']  
-
-auth_bp.db = db
-Product.db = db
-Url.db = db
-Click.db = db
-
-init_app(app)
+with app.app_context():
+    db.init_app(app)
+    db.create_all()
+    register_blueprints(app)
+    
 if __name__ == '__main__':
     app.run(port=2137, debug=True)

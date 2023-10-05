@@ -4,7 +4,7 @@ import "animate.css";
 import UsersTabComponent from "./tabs/UsersTabComponent";
 import BookmarksTabComponent from "./tabs/BookmarksTabComponent";
 import StatsTabComponent from "./tabs/StatsTabComponent";
-
+import GroupsTabComponent from "./tabs/GroupsTabComponent";
 
 const AdminPanelComponent: React.FC = () => {
   const [activeTab, setActiveTab] = useState("Users");
@@ -34,11 +34,18 @@ const AdminPanelComponent: React.FC = () => {
               >
                 Statystyki
               </NavItem>
+              <NavItem
+                isActive={activeTab === "Groups"}
+                onClick={() => setActiveTab("Groups")}
+              >
+                Grupy
+              </NavItem>
             </NavFrame>
           </NavWrapper>
           {activeTab === "Users" && <UsersTabComponent />}
           {activeTab === "Bookmarks" && <BookmarksTabComponent />}
           {activeTab === "Statistics" && <StatsTabComponent />}
+          {activeTab === "Groups" && <GroupsTabComponent />}
         </Wrapper>
       </HeroMain>
     </>
@@ -84,7 +91,7 @@ const HeroMain = styled.div`
   animation: zoomIn 0.7s;
   transition: all 0.3s ease;
   min-width: 20rem;
-  max-width: 25rem;
+  max-width: 50rem;
   width: 100%;
   margin-left: 1rem;
 `;
