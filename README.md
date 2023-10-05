@@ -32,3 +32,6 @@
   <li>Panel użytkownika</li>
   <li><s>Migracja z MongoDB do MySQL</s></li>
 </ul>
+<h2>Schemat struktury bazy danych:</h2>
+<img src="schemat%20bazy%20danych.png" style="width: 1280px;"/>
+
