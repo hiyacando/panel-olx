@@ -14,7 +14,7 @@ const Button: React.FC<ButtonProps> = ({text, onClick, disabled = false}) => {
 const StyledButton = styled.button`
 font-weight: 600;
 padding: 0;
-color: white;
+color: black;
 background: none;
 border: none;
 display: flex;

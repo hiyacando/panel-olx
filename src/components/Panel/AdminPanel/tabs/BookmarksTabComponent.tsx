@@ -163,7 +163,7 @@ const AssociateButton = styled.button`
   border-radius: 0.5rem;
   padding: 0.2rem 0.5rem;
   border: none;
-  color: white;
+  color: #212529;
   &:hover {
     background-color: rgba(0, 0, 0, 0.3);
   }
@@ -171,7 +171,7 @@ const AssociateButton = styled.button`
 
 const Wrapper = styled.div``;
 const TableData = styled.td`
-  color: white;
+  color: #212529;
   text-align: center;
   padding: 0;
   line-height: 1.35rem;
@@ -195,7 +195,7 @@ const TableRow = styled.tr`
   }
 `;
 const TableHead = styled.thead`
-  color: white;
+  color: #212529;
   text-align: center;
   z-index: 1001;
 `;

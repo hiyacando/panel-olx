@@ -131,18 +131,18 @@ const GroupsTabComponent: React.FC = () => {
   );
 };
 const Title = styled.h2`
-  color: #ffffff;
+  color: #212529;
 `;
 const Wrapper = styled.div``;
 const InputLabel = styled.label`
-  color: #ffffff;
+  color: #212529;
   display: flex;
   flex-direction: column;
 `;
 const Input = styled.input`
   width: 10rem;
   height: 1.2rem;
-  border: 1px solid white;
+  border: 1px solid #212529;
   border-radius: 0.5rem;
   &:focus-visible {
     outline: none;
@@ -150,7 +150,7 @@ const Input = styled.input`
 `;
 
 const TableData = styled.td`
-  color: white;
+  color: #212529;
   text-align: center;
   padding: 0;
   line-height: 1.35rem;
@@ -170,7 +170,7 @@ const TableRow = styled.tr`
 `;
 
 const TableHead = styled.thead`
-  color: white;
+  color: #212529;
   text-align: center;
   z-index: 1001;
 `;

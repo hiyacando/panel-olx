@@ -5,7 +5,7 @@ import { setUser, selectUser } from "./redux/models/user";
 import { fetchUserInfo } from "./utils/axios-service";
 import SignInComponent from "./components/Authorization/SignInComponent";
 import RegisterComponent from "./components/Authorization/RegisterComponent";
-import PanelComponent from "./components/Panel/PanelComponent";
+import MainPage from "./pages/index";
 import styled from "styled-components";
 import AdminPanelComponent from "./components/Panel/AdminPanel/AdminPanelComponent";
 import Cookies from "js-cookie";
@@ -88,7 +88,7 @@ const App = () => {
           ) : (
             <Wrapper>
               {user.isVerifed ? (
-                <PanelComponent onLogout={handleLogout} />
+                <MainPage onLogout={handleLogout} />
               ) : (
                 <Unverifed>
                   Oczekiwanie na weryfikacje konta.
@@ -96,7 +96,7 @@ const App = () => {
                 </Unverifed>
               )}
 
-              {user.isAdmin && <AdminPanelComponent />}
+             
             </Wrapper>
           )}
         </>

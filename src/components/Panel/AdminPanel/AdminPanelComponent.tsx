@@ -1,6 +1,5 @@
 import { useState } from "react";
 import styled from "styled-components";
-import "animate.css";
 import UsersTabComponent from "./tabs/UsersTabComponent";
 import BookmarksTabComponent from "./tabs/BookmarksTabComponent";
 import StatsTabComponent from "./tabs/StatsTabComponent";
@@ -61,14 +60,15 @@ const NavItem = styled.li<{ isActive: boolean }>`
   gap: 3rem;
   padding: 0 1.5rem;
   line-height: 2.5rem;
-  color: ${({ isActive }) => (isActive ? "violet" : "white")};
-  border-bottom: ${({ isActive }) => (isActive ? "2px solid violet" : "none")};
+  font-size: 0.9rem;
+  color: ${({ isActive }) => (isActive ? "#212529" : "#212529")};
+  border-bottom: ${({ isActive }) => (isActive ? "2px solid #212529" : "none")};
   &:hover {
-    color: violet;
+    color: #212529;
     cursor: pointer;
   }
   &:active {
-    color: violet;
+    color: #cb8849;
   }
 `;
 const NavFrame = styled.ul`
@@ -81,26 +81,25 @@ const NavWrapper = styled.div``;
 const Wrapper = styled.div``;
 
 const HeroMain = styled.div`
-  background: rgba(27, 27, 27, 0.56);
-  border-radius: 1rem;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(0.7px);
-  -webkit-backdrop-filter: blur(0.7px);
-  border: 1px solid rgba(27, 27, 27, 0.15);
-  padding: 1.5rem 1.5rem 1.5rem 1.5rem;
-  animation: zoomIn 0.7s;
+  background: #cb8849;
+  padding: 1rem 1.5rem 1.5rem 1.5rem;
+  animation: ease-in-out 0.7s;
   transition: all 0.3s ease;
   min-width: 20rem;
-  max-width: 50rem;
+  max-width: 25rem;
   width: 100%;
-  margin-left: 1rem;
-`;
+  z-index: 1001;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
+  @media(max-width:1140px){
+    display: none;
+  }
+  `;
 
-const Title = styled.h1`
-  color: #ffffff;
-  font-size: 1.5rem;
-  padding-bottom: 1rem;
-  border-bottom: solid 1px #2a2a2f;
+const Title = styled.div`
+  color: #212529;
+  font-weight: 600;
+  font-size: 1rem;
+  
   margin: 0;
   align-self: center;
   text-align: center;

@@ -1,7 +1,5 @@
-import React, { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
-import ScrapeButtonComponent from "./ScrapeButtonComponent";
-import SignOutButtonComponent from "../Authorization/SignOutButtonComponent";
 import DataTable from "./DataTableComponent";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -9,206 +7,172 @@ import {
   selectSelectedModel,
   setSelectedModel,
 } from "../../redux/models/navItems";
-import { selectUser } from "../../redux/models/user";
+import {
+  addURL,
+  fetchAllUrls,
+  
+} from "../../utils/axios-service";
+import BookmarkNavComponent from "./BookmarkNavComponent";
+import { useFormik } from "formik";
 
-interface PanelComponentProps {
-  onLogout: () => void;
+interface Bookmark {
+  bookmark_uuid: string;
+  model: string;
+  url: string;
+  title: string;
 }
-
-const PanelComponent: React.FC<PanelComponentProps> = ({ onLogout }) => {
+const PanelComponent = () => {
   const dispatch = useDispatch();
   const selectedModel = useSelector(selectSelectedModel);
   const navItems = useSelector(selectNavItems);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [, setShouldFetchData] = useState(true);
-  const user = useSelector(selectUser);
+  const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
 
-  const handleModelClick = (model: string) => {
-    if (model !== selectedModel) {
-      setShouldFetchData(true);
-      dispatch(setSelectedModel(model));
-    }
-    setIsMenuOpen(false);
-  };
-
-  const handleMenuToggle = () => {
-    setIsMenuOpen(!isMenuOpen);
-    if (!isMenuOpen) {
-      setShouldFetchData(false);
-    }
-  };
   useEffect(() => {
     if (!selectedModel && navItems.length > 0) {
       dispatch(setSelectedModel(navItems[0].model));
     }
+    const fetchData = async () => {
+      try {
+        const data = await fetchAllUrls();
+        setBookmarks(data);
+      } catch (error) {
+        console.error("Błąd podczas pobierania zakładek:", error);
+      }
+    };
+
+    fetchData();
   }, [selectedModel, navItems, dispatch]);
 
-  const visibleNavItems = navItems.slice(0, 4);
+  const formik = useFormik({
+    initialValues: {
+      model: "",
+      url: "",
+      title: "",
+    },
+    onSubmit: async (values) => {
+      const newBookmark = {
+        model: values.model,
+        url: values.url,
+        title: values.title,
+      };
 
+      try {
+        const result = await addURL(newBookmark);
+
+        if (result) {
+          formik.resetForm();
+          console.log("Zakładka dodana do bazy danych");
+          const updatedBookmarks = await fetchAllUrls();
+          setBookmarks(updatedBookmarks);
+        } else {
+          console.error("Błąd podczas dodawania zakładki do bazy danych");
+        }
+      } catch (error) {
+        console.error("Błąd podczas dodawania zakładki:", error);
+      }
+    },
+  });
   return (
     <>
-      <HeroMain>
-        <Title>PANEL OGŁOSZEŃ</Title>
-        <Wrapper>
-          <MenuContainer>
-            <SignOutButtonComponent onLogout={onLogout} />
-            <UserWrapper>
-              <Avatar src={user.avatar!} />
-              <UserInfo>
-                <UserName>{user.email}</UserName>
-                <UserRole>{user.role}</UserRole>
-                <UserGroup>{user.group_name}</UserGroup>
-              </UserInfo>
-            </UserWrapper>
-          </MenuContainer>
-          <NavWrapper>
-            <NavFrame>
-              {visibleNavItems.map((navItem, index) => (
-                <NavItem
-                  key={index}
-                  onClick={() => handleModelClick(navItem.model)}
-                  isActive={selectedModel === navItem.model}
-                >
-                  {navItem.title}
-                </NavItem>
-              ))}
-              <NavItem onClick={handleMenuToggle} isActive={isMenuOpen}>
-                Inne
-                {isMenuOpen && (
-                  <SubMenu isActive={isMenuOpen}>
-                    {navItems.slice(4).map((navItem, index) => (
-                      <SubNavItem
-                        key={index}
-                        onClick={() => {
-                          handleModelClick(navItem.model);
-                          if (!isMenuOpen) {
-                            setShouldFetchData(true);
-                          }
-                        }}
-                        isActive={selectedModel === navItem.model}
-                      >
-                        {navItem.title}
-                      </SubNavItem>
-                    ))}
-                  </SubMenu>
-                )}
-              </NavItem>
-              <ScrapeButtonComponent />
-            </NavFrame>
-          </NavWrapper>
-          <DataTable />
-        </Wrapper>
-      </HeroMain>
+      <MainContainer>
+
+      <div className="Cipa">
+      
+      <MainWrapper>
+      <BookmarkNavComponent/>
+    <div className="chuj">
+      <BookmarksWrapper>
+        <CreateBookmark>
+      <text>Utwórz nową zakładke:</text>
+      <form>
+      <div className="bookmarks">
+        <label>Model:</label>
+        <input placeholder="iphone-11-pro"/>
+      </div>
+      <div>
+        <label>URL:</label>
+        <input placeholder="URL z OLX.PL"/>
+      </div>
+      <div>
+        <label>Nazwa:</label>
+        <input placeholder="IPhone 11 Pro"/>
+      </div>
+      </form>
+      </CreateBookmark>
+      </BookmarksWrapper>
+          <DataTable/>
+          </div>
+          </MainWrapper>
+          </div>
+        </MainContainer>
     </>
   );
 };
-const UserGroup = styled.span`
-  color: #ffffff;
-`;
-const MenuContainer = styled.div`
-  position: fixed;
-  flex-direction: column;
-  float: left;
-`;
-const UserInfo = styled.div`
+const CreateBookmark = styled.div`
+`
+const BookmarksWrapper = styled.div`
+background: #f8f9fa;
+padding: 0;
+display: flex;
+flex-direction: column;
+text{
+  font-size: 0.9rem;
+
+}
+form{
+  font-size: 0.9rem;
+  padding: 0;
   display: flex;
-  flex-direction: column;
-`;
-const UserRole = styled.span`
-  color: #ffffff;
-`;
-const UserName = styled.span`
-  color: #ffffff;
-`;
-const UserWrapper = styled.div`
-  display: flex;
-  margin-bottom: 0.5rem;
-`;
-const Avatar = styled.img`
-  width: 3.5rem;
-  margin-right: 0.5rem;
-  background-color: rgba(0, 0, 0, 0.2);
-  border-radius: 0.5rem;
-`;
-
-const SubMenu = styled.ul<{ isActive: boolean }>`
-  display: ${({ isActive }) => (isActive ? "block" : "none")};
-  list-style-type: none;
-  padding: 0.5rem 0.2rem;
-  margin-top: 2.6rem;
-  position: absolute;
-  background-color: rgba(0, 0, 0, 0.9);
-  border-radius: 0 0 0.6rem 0.6rem;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-  z-index: 1;
-`;
-
-const SubNavItem = styled.li<{ isActive: boolean }>`
-  color: ${({ isActive }) => (isActive ? "violet" : "white")};
-  font-size: 1rem;
-
-  &:hover {
-    color: violet;
-    background-color: rgba(255, 255, 255, 0.1);
-    cursor: pointer;
+  justify-content: left;
+  
+  input{
+    
+    width: 5rem;
+    border: none;
+    padding: 0rem;
     border-radius: 0.5rem;
-  }
-`;
-const NavItem = styled.li<{ isActive: boolean }>`
-  margin: 0;
-  display: flex;
-  list-style-type: none;
-  padding: 0;
-  gap: 3rem;
-  padding: 0 2rem;
-  line-height: 2.5rem;
-  color: ${({ isActive }) => (isActive ? "violet" : "white")};
-  border-bottom: ${({ isActive }) => (isActive ? "2px solid violet" : "none")};
-  &:hover {
-    color: violet;
-    cursor: pointer;
-  }
-  &:active {
-    color: violet;
-  }
-`;
-const NavFrame = styled.ul`
-  display: flex;
-  list-style-type: none;
-  padding: 0;
-  justify-content: center;
-  align-items: center;
-`;
-const NavWrapper = styled.div``;
-const Wrapper = styled.div`
-  margin-top: 1rem;
-  display: flex-start;
-  justify-content: center;
-`;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 6rem;
+    margin-right: 0.5rem;
 
-const HeroMain = styled.div`
-  background: rgba(27, 27, 27, 0.56);
-  border-radius: 1rem;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(0.7px);
-  -webkit-backdrop-filter: blur(0.7px);
-  border: 1px solid rgba(27, 27, 27, 0.15);
-  padding: 1.5rem 1.5rem 1.5rem 1.5rem;
-  animation: zoomIn 0.7s;
-  transition: all 0.3s ease;
-  min-width: 80rem;
+  }
+  div{
+    display: flex;
+    flex-direction: column;
+    
+  }
+}
+`
+const MainWrapper = styled.div`
+display: block;
+flex: 1;
+flex-grow: 1;
+margin-top: 0.5rem;
+.chuj{
+  background: #f8f9fa;
+  padding: 0 1.5rem;
+  max-width: 100%;
+  
+}
+`
+const MainContainer = styled.div`
+
+  margin-right: auto;
+  margin-left: auto;
+  padding: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  
   width: 100%;
-  display: block;
-`;
 
-const Title = styled.h1`
-  color: #ffffff;
-  font-size: 1.5rem;
-  padding-bottom: 1rem;
-  border-bottom: solid 1px #2a2a2f;
-  margin: 0;
-  align-self: center;
-  text-align: center;
+  .Cipa{
+    display: flex;
+    flex-grow: 1;
+    
+  }
+
 `;
 
 export default PanelComponent;

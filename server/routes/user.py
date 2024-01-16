@@ -2,6 +2,7 @@ import jwt
 from flask import current_app, Blueprint, request, jsonify
 from models.user import User
 from db import db
+from models.group import Group
 
 user_bp = Blueprint('user', __name__)
 
@@ -108,7 +109,8 @@ def delete_user():
             user_to_delete = User.query.filter_by(user_uuid=user_uuid_to_delete).first()
             if user_to_delete:
                 if user_to_delete.group:
-                    user_to_delete.group.members.remove(user_to_delete)
+                    user_in_group = Group.query.filter_by(group_uuid=user_to_delete.group[0].group_uuid).first()
+                    user_in_group.members.remove(user_to_delete)
 
                 db.session.delete(user_to_delete)
                 db.session.commit()

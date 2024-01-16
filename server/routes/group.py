@@ -70,9 +70,9 @@ def change_member_role(group_id, user_id, new_role):
         return jsonify({'error': 'Group not found'}), 404
 
 
-@group_bp.route('/delete_group/<string:group_id>', methods=['DELETE'])
-def delete_group(group_id):
-    group = Group.query.get(group_id)
+@group_bp.route('/delete_group/<string:group_uuid>', methods=['DELETE'])
+def delete_group(group_uuid):
+    group = Group.query.filter_by(group_uuid=group_uuid).first()
 
     if group:
         group.remove_group()

@@ -28,8 +28,12 @@ class Product(db.Model):
         return Product.query.filter_by(model=model).all()
 
     @staticmethod
-    def clear_all_products():
-        Product.query.delete()
+    def clear_all_products(selected_model=None):
+        query = Product.query
+        if selected_model:
+            query = query.filter_by(model=selected_model)
+
+        query.delete()
         db.session.commit()
 
     def update_status(self, status='green'):

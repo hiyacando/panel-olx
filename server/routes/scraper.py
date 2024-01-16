@@ -9,9 +9,10 @@ scraper_bp.before_request(auth_middleware)
 
 @scraper_bp.route('/scrape_data', methods=['POST'])
 def scrape():
-    Product.clear_all_products()
     Click.clear_all_clicks()
-    run_scraping()
+    selected_model = request.json.get('selected_model')
+    Product.clear_all_products(selected_model)
+    run_scraping(selected_model)
     return "Scraping completed."
 
 @scraper_bp.route('/products/<model>', methods=['GET'])

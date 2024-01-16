@@ -8,18 +8,20 @@ from models.products import Product
 from models.bookmark import Bookmark
 from db import db
 
-def run_scraping():
+def run_scraping(selected_model):
     chrome_driver_path = 'F:\\Program Data\\Visual Studio Code Workspace\\scraping\\panel-olx\\server\\chromedriver.exe'
     chrome_options = Options()
-    chrome_options.add_argument("--disable-logging --incognito --headless") 
+    chrome_options.add_argument("--disable-logging")
+    chrome_options.add_argument("--incognito")
     driver = webdriver.Chrome(service=Service(chrome_driver_path), options=chrome_options)
 
-    bookmarks = db.session.query(Bookmark).all()
+    bookmarks = db.session.query(Bookmark).filter_by(model=selected_model).all()
     new_products_count = 0  
 
     for bookmark in bookmarks:
         url = bookmark.url
         model = bookmark.model
+
         for page_number in range(1, 4):
             page_url = f"{url}&page={page_number}"  
 
@@ -51,12 +53,11 @@ def run_scraping():
 
                     product = Product(model=model, link=link, title=title, price=price_cleaned, is_damaged=is_damaged)
                     product.save()
-                        
                     new_products_count += 1 
-                    
+
                 except Exception as e:
                     print("Błąd podczas przetwarzania tytułu:", e)
-                
+            
     driver.quit()
     print("Zakończono scraping i zapisywanie danych do bazy danych.")
     print(f"Dodano {new_products_count} nowych produktów.") 

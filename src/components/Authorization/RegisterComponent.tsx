@@ -116,7 +116,7 @@ const FormGroup = styled.div`
 `;
 
 const Label = styled.label`
-  /* ... */
+
 `;
 
 const ErrorText = styled.div`

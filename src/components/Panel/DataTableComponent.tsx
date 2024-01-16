@@ -3,7 +3,6 @@ import styled from "styled-components";
 import { Scrollbars } from "react-custom-scrollbars-2";
 import { useSelector, useDispatch } from "react-redux";
 import { selectUser } from "../../redux/models/user";
-
 import {
   fetchProductsData,
   recordClick,
@@ -14,6 +13,7 @@ import {
   setShouldFetchData,
   selectSelectedModel,
 } from "../../redux/models/navItems";
+import ScrapeButtonComponent from "./ScrapeButtonComponent";
 
 interface ItemData {
   link: string;
@@ -27,10 +27,26 @@ const DataTable: React.FC = () => {
   const selectedModel = useSelector(selectSelectedModel);
   const user = useSelector(selectUser);
   const shouldFetchData = useSelector(
-    (state: RootState) => state.navItems.shouldFetchData,
+    (state: RootState) => state.navItems.shouldFetchData
   );
   const dispatch = useDispatch();
+
   const [data, setData] = useState<ItemData[]>([]);
+  const [truncateLength, setTruncateLength] = useState<number>(
+    window.innerWidth < 768 ? 24 : 80
+  );
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+
+  const handleResize = () => {
+    setTruncateLength(window.innerWidth < 768 ? 24 : 80);
+  };
+
+  useEffect(() => {
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   useEffect(() => {
     if (selectedModel && shouldFetchData) {
@@ -39,9 +55,14 @@ const DataTable: React.FC = () => {
     dispatch(setShouldFetchData(false));
   }, [selectedModel, shouldFetchData]);
 
+  useEffect(() => {
+    console.log("Data has changed. Triggering re-render...");
+  }, [data]); 
+
   const fetchAndSetData = async (selectedModel: string) => {
     try {
       const fetchedData = await fetchProductsData(selectedModel);
+      console.log("Fetched Data:", fetchedData[0]);
       setData(fetchedData);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -52,121 +73,172 @@ const DataTable: React.FC = () => {
     try {
       await recordClick(user.user_uuid, link);
       const updatedStatus = await fetchProductStatus(link);
-      const updatedData = data.map((item) => {
-        if (item.link === link) {
-          return {
-            ...item,
-            status: updatedStatus,
-          };
-        }
-        return item;
-      });
+      const updatedData = data.map((item) =>
+        item.link === link ? { ...item, status: updatedStatus } : item
+      );
       setData(updatedData);
     } catch (error) {
       console.error("Error recording click:", error);
     }
   };
 
+  const parsePrice = (price: string) => {
+    return parseFloat(price) || 0;
+  };
+  
+  const handleSort = async () => {
+    console.log("Data Before Sorting:", data);
+  
+    const sortedData = [...data].sort((a, b) => {
+      const priceA = parsePrice(a.price);
+      const priceB = parsePrice(b.price);
+  
+      if (sortOrder === "asc") {
+        return priceA - priceB;
+      } else {
+        return priceB - priceA;
+      }
+    });
+  
+    console.log("Data After Sorting:", sortedData);
+  
+    await new Promise((resolve) => setTimeout(resolve, 500));
+  
+    setData(sortedData);
+    setSortOrder((prevSortOrder) => (prevSortOrder === "asc" ? "desc" : "asc"));
+  };
   return (
     <>
-      <Scrollbars style={{ minWidth: 300, minHeight: 690, maxHeight: 700 }}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableHeader>Link</TableHeader>
-              <TableHeader>Tytuł</TableHeader>
-              <TableHeader>Cena</TableHeader>
-              <TableHeader>Uszkodzenia</TableHeader>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {data.map((item, index) => (
-              <TableRow key={index}>
-                <TableData>
-                  <Link
-                    href={item.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onMouseDown={() => handleLinkClick(item.link)}
-                    className={
-                      typeof item.status === "string"
-                        ? item.status.toLowerCase()
-                        : ""
-                    }
-                  >
-                    Otwórz link
-                  </Link>
-                </TableData>
-                <TableData>{item.title}</TableData>
-                <TableData>{item.price} zł</TableData>
-                <TableData>{item.is_damaged ? "Tak" : "Brak"}</TableData>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </Scrollbars>
+      <DataTableWrapper>
+        <ScrapeButtonComponent />
+
+        <Scrollbars
+          autoHide
+          className="dupa"
+          marginHeight={0}
+          style={{
+            height: "calc(100vh - 15rem)",
+            scrollbarWidth: "none",
+            msOverflowStyle: "none",
+          }}
+        >
+          <table>
+            <thead>
+              <tr>
+                <th>Link</th>
+                <th>Tytuł</th>
+                <th onClick={handleSort} className="sort">Cena</th>
+                <th>Uszkodzenia</th>
+              </tr>
+            </thead>
+            <tbody>
+              {data.map((item, index) => (
+                <tr key={index}>
+                  <td>
+                    <a
+                      href={item.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onMouseDown={() => handleLinkClick(item.link)}
+                      className={
+                        typeof item.status === "string"
+                          ? item.status.toLowerCase()
+                          : ""
+                      }
+                    >
+                      Otwórz
+                    </a>
+                  </td>
+                  <td>{truncateText(item.title, truncateLength)}</td>
+                  <td>{item.price} zł</td>
+                  <td>{item.is_damaged ? "Tak" : "Brak"}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </Scrollbars>
+      </DataTableWrapper>
     </>
   );
 };
 
-const Link = styled.a`
-  text-decoration: none;
-  font-size: 1rem;
-  font-weight: 500;
-  color: white;
-  &.red {
-    content: "dupa";
-    color: violet;
+const truncateText = (text: string, maxLength: number) => {
+  if (text.length > maxLength) {
+    return text.substring(0, maxLength) + "...";
   }
-
-  &.green {
-    color: white;
+  return text;
+};
+const DataTableWrapper = styled.div`
+  border: 1px solid #dee2e6;
+  border-bottom: none;
+  background: #f8f9fa;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  max-width: 90rem;
+  .thumb-vertical {
+    display: none;
   }
-
-  &.blue {
-    color: blue;
+  a {
+    color: #212529;
+    text-decoration: none;
+    :active {
+      color: #cb8849;
+    }
+    &:visited {
+      color: #cb8849;
+    }
   }
-  &:hover {
-    color: darkgray;
+  a.green {
+    color: #212529;
   }
-  &:active {
-    color: violet;
+  a.red {
+    color: #cb8849;
   }
-  &:visited {
-    color: violet;
+  td {
+    color: #212529;
+    text-align: center;
+    line-height: 1rem;
+    height: 2rem;
+    word-break: break-all;
+    white-space: nowrap;
+    border-bottom: 1px solid #dee2e6;
+    font-size: 0.8rem;
   }
-`;
-
-const TableData = styled.td`
-  color: white;
-  text-align: center;
-  padding: 0;
-  line-height: 1.35rem;
-  padding: 0 0.25rem;
-`;
-
-const TableBody = styled.tbody``;
-
-const TableHeader = styled.th``;
-
-const TableRow = styled.tr`
-  border-radius: 1rem;
-
-  &:hover {
-    background-color: rgba(0, 0, 0, 0.1);
+  tr {
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.05);
+    }
   }
-`;
-
-const TableHead = styled.thead`
-  color: white;
-  text-align: center;
-  z-index: 1001;
-`;
-
-const Table = styled.table`
-  margin-left: auto;
-  margin-right: auto;
-  border-spacing: 0;
+  table {
+    width: 100%;
+    border-spacing: 0;
+    border-collapse: collapse;
+  }
+  th {
+    font-weight: 500;
+    font-size: 0.8rem;
+    background: #e9ecef;
+    border-collapse: none;
+    padding: 0.5rem 0;
+    height: 1.75rem;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+  }
+  th.sort{
+    &:hover{
+      cursor: pointer;
+      font-weight: bolder;
+    
+    }
+  }
+  thead {
+    border-collapse: none;
+  }
+  tbody {
+    height: 10px;
+  }
 `;
 
 export default DataTable;

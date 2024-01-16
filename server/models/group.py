@@ -42,9 +42,7 @@ class Group(db.Model):
         else:
             return {'error': 'Nie znaleziono uzytkownika'}, 404
     def remove_group(self):
-        for user in self.members:
-            user.group = None
-            user.group_role = None
+        self.members = []
         db.session.delete(self)
         db.session.commit()
 

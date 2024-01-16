@@ -145,7 +145,7 @@ const ButtonGroup = styled.div`
 const Button = styled.button`
   background: none;
   border: none;
-  color: violet;
+  color: #212529;
   padding: 0.1rem;
   &:hover {
     background-color: rgba(0, 0, 0, 0.1);
@@ -159,7 +159,7 @@ const Avatar = styled.img`
   border-radius: 0.5rem;
 `;
 const TableData = styled.td`
-  color: white;
+  color: #212529;
   text-align: center;
   padding: 0;
   line-height: 1.35rem;
@@ -183,7 +183,7 @@ const TableRow = styled.tr`
   }
 `;
 const TableHead = styled.thead`
-  color: white;
+  color: #212529;
   text-align: center;
   z-index: 1001;
 `;

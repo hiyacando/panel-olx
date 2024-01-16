@@ -85,9 +85,9 @@ export const recordClick = async (user_uuid: string | null, link: string) => {
     throw error;
   }
 };
-export const scrapeData = async () => {
+export const scrapeData = async (selectedModel: string) => {
   try {
-    const response = await axiosInstance.post("/scraper/scrape_data");
+    const response = await axiosInstance.post("/scraper/scrape_data", { selected_model: selectedModel });
     return response.data;
   } catch (error) {
     console.error("Error scraping data:", error);

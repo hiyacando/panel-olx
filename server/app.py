@@ -4,7 +4,7 @@ from decouple import config
 from routes import register_blueprints
 from db import db
 app = Flask(__name__)
-CORS(app, supports_credentials=True)
+cors = CORS(app, resources={r"/*": {"origins": "http://192.168.100.100:5173", "supports_credentials": True}})
 SECRET_KEY = config('SECRET_KEY')
 app.config['SECRET_KEY'] = SECRET_KEY
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:@localhost/panel-olx'
@@ -15,4 +15,4 @@ with app.app_context():
     register_blueprints(app)
     
 if __name__ == '__main__':
-    app.run(port=2137, debug=True)
+    app.run(host='192.168.100.100', port=2137, debug=True)
